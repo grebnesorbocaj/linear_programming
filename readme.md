@@ -17,3 +17,10 @@ The woodworker would like to limit costs to $315 per workweek, working 40 hours 
 
 What is the maximum profit the woodworker can achieve? What quantities of each would they produce in that given week.
 ```
+
+## Running Code
+
+```
+pipenv install
+pipenv run python test.py
+```

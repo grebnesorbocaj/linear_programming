@@ -151,10 +151,3 @@ class LP_Model:
             y_val = (self._cost_limit - x_val*x.cost)/y.cost
 
         return floor(x_val), floor(y_val)
-
-
-
-
-x = LP_Item("Table", "2 hours", 15, 90)
-y = LP_Item("Chair", "5 hours", 45, 180)
-model = LP_Model(x, y, 315, "1 workweeks")
