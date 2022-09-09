@@ -102,7 +102,7 @@ class LP_Model:
             """
             a = y.cost * mult - y.time
             b = self._cost_limit * mult - self._time_limit
-            y_val = b/a
+            y_val = floor(b/a)
             x_val = (self._cost_limit - y_val*y.cost)/x.cost
 
         elif y.time % y.cost == 0:
@@ -117,7 +117,7 @@ class LP_Model:
             """
             a = x.cost * mult - x.time
             b = self._cost_limit * mult - self._time_limit
-            x_val = b/a
+            x_val = floor(b/a)
             y_val = (self._cost_limit - x_val*x.cost)/y.cost
 
         elif x.cost % x.time == 0:
@@ -132,22 +132,35 @@ class LP_Model:
             """
             a = y.time * mult - y.cost
             b = self._time_limit * mult - self._cost_limit
-            y_val = b/a
+            y_val = floor(b/a)
             x_val = (self._cost_limit - y_val*y.cost)/x.cost
 
-        elif y.cost % y.time == 0:
+        elif y.cost > y.time:
             mult = y.cost/y.time
             """
-            multiply time equation so that y's cancel out
-                multiply time of x and limiter
-                solve for x
-                    a = subtract xtime*mult from x.cost
-                    b = subtract time_limit*mult from cost_limit
-                    y = b/a
+            In the case that none of the constants are multiples of eachother:
+            - find the multiplier that would be > 1
+            - use the same process as above with this multiplier that's not a whole number
+            - use the floor of valued derived from dividing right side of equation by constant
+                to ensure a whole number is returned
             """
-            a = y.time * mult - y.cost
+            a = x.time * mult - x.cost
             b = self._time_limit * mult - self._cost_limit
-            x_val = b/a
+            x_val = floor(b/a)
             y_val = (self._cost_limit - x_val*x.cost)/y.cost
+        else:
+            mult = y.time/y.cost
+            """
+            In the case that none of the constants are multiples of eachother:
+            - find the multiplier that would be > 1
+            - use the same process as above with this multiplier that's not a whole number
+            - use the floor of valued derived from dividing right side of equation by constant
+                to ensure a whole number is returned
+            """
+            a = x.time * mult - x.cost
+            b = self._cost_limit * mult - self._time_limit
+            x_val = floor(b/a)
+            y_val = (self._time_limit - x_val*x.time)/y.time
 
+        # it doesn't make sense to create a percentage of a product, so use the lower bound
         return floor(x_val), floor(y_val)
